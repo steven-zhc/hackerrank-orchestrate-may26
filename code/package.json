@@ -7,8 +7,9 @@
   },
   "scripts": {
     "build": "tsc --noEmit",
-    "start": "tsx src/main.ts",
-    "validate": "tsx src/io/validate.ts"
+    "start": "tsx --env-file=.env.local src/main.ts",
+    "test:corpus": "tsx --env-file=.env.local src/corpus/test-corpus.ts",
+    "validate": "tsx --env-file=.env.local src/io/validate.ts"
   },
   "dependencies": {
     "@langchain/core": "^0.3.80",

@@ -32,3 +32,32 @@
 4. **P4: Integration** — Wire end-to-end, run on full dataset.
 5. **P5: Tune & Test** — Create `validate.ts`, run against sample, iterate on prompts.
 6. **P6: Polish** — README in code/, final cleanup, submission prep.
+
+---
+
+# TODO — 2026-05-01 (Phase: P1 Corpus Setup)
+
+## Summary
+- Created P1 corpus implementation plan (`docs/sprint1_p1_corpus.md`)
+- Added `--env-file=.env.local` to all package.json scripts (start, validate, test:corpus) for zero-dep env loading
+- Created `code/src/corpus/test-corpus.ts` — test script that loads 5 hardcoded docs, builds MemoryVectorStore, tests retrieval, and counts full corpus
+- Added `test:corpus` script to package.json
+
+## Remaining Issues
+- `test-corpus.ts` not yet executed — needs `pnpm test:corpus` run to verify loader + indexer + retrieval
+- `triage/analyze.ts` — Phase 1 LLM call still a stub
+- `triage/respond.ts` — Phase 2 LLM call still a stub
+- CSV reader untested with actual support_tickets.csv
+- Full corpus indexing (774 docs) deferred until cache implemented
+
+## Improvement Suggestions
+- Add embeddings disk cache after proving retrieval works (reduces re-index cost)
+- Consider chunking large .md files if retrieval quality is poor
+- Add structured logging with ticket metadata for observability
+
+## Next Steps
+1. **Run `pnpm test:corpus`** — Execute test script, verify 5-doc load + index + retrieval works
+2. **Fix any edge cases** — Loader path resolution, company/category tagging for Visa nested dirs
+3. **P2: IO** — Test CSV reader with sample_support_tickets.csv
+4. **P3: Triage Pipeline** — Implement analyze.ts and respond.ts LLM calls
+5. **P4: Integration** — Wire end-to-end on full dataset
