@@ -114,8 +114,8 @@ block-beta
 
 | Name | Fields | Notes |
 |------|--------|-------|
-| `ConfigService` | `anthropicApiKey`, `openaiApiKey` | Env vars, shared by all contexts |
-| `LlmService` | `invoke(prompt)` | Claude API wrapper, used by Triage |
+| `ConfigService` | `openaiApiKey`, `dataDir` | Env vars via Effect Config, shared by all contexts |
+| `LlmService` | `chatModel` | OpenAI ChatOpenAI (gpt-4o) wrapper, used by Triage |
 
 ## Product Area Enum (canonical internal values)
 
@@ -180,7 +180,7 @@ graph TD
 
 ```mermaid
 graph LR
-  ConfigService["ConfigService\n(env vars)"] --> LlmService["LlmService\n(Claude API via LangChain)"]
+  ConfigService["ConfigService\n(env vars)"] --> LlmService["LlmService\n(OpenAI via LangChain)"]
   ConfigService --> CorpusService["CorpusService\n(load, index, retrieve)"]
   LlmService --> TriageService["TriageService\n(Effect.ts pipeline)"]
   CorpusService --> TriageService

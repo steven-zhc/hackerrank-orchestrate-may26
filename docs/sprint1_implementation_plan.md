@@ -39,14 +39,14 @@ hr ../support_tickets/support_tickets.csv   # defaults to ./output.csv
 | D1 | Effect.ts across whole project | Team familiarity, FP style |
 | D2 | ~~LangChain + LangGraph~~ LangChain only (superseded by D19) | LangChain for LLM abstraction + RAG. LangGraph dropped — flow is linear, Effect.ts handles natively. |
 | D3 | In-memory MemoryVectorStore | Zero external deps, 774 files fits in memory |
-| D4 | Claude API (Anthropic) | Primary LLM provider |
+| D4 | ~~Claude API (Anthropic)~~ OpenAI API (gpt-4o) (superseded) | Switched to OpenAI for both chat and embeddings. Single API key. |
 | D5 | pnpm + binary `hr` cmd | User preference, clean CLI interface |
 | D6 | code/src/ for source | code/ for project config (package.json, tsconfig) |
 | D7 | csv-parse + csv-stringify | Minimal, well-tested CSV handling |
 | D8 | One .md file = one document | Simple chunking, good enough for MVP |
 | D9 | Sequential ticket processing | Avoid rate limits, simpler debugging |
 | D10 | docs/*.md as decision contracts | All decisions documented, traceable for AI Judge interview |
-| D11 | OpenAI `text-embedding-3-small` for embeddings | Anthropic has no embeddings API. OpenAI is cheap, well-supported in LangChain |
+| D11 | OpenAI `text-embedding-3-small` for embeddings | OpenAI for both chat (gpt-4o) and embeddings. Single OPENAI_API_KEY. |
 | D12 | ~~Safety Gate as first graph node~~ Merged into Phase 1 Analyze (superseded by D20) | Safety detection now part of single Analyze LLM call after retrieval. More accurate with context. |
 | D13 | ~~Split Classify and Route into separate nodes~~ Merged into Phase 1 Analyze (superseded by D20) | Classify + Route done in one structured output call. Orthogonal concerns preserved in Zod schema fields. |
 | D14 | ~~Company Inference node~~ Merged into Phase 1 Analyze (superseded by D20, D24) | Full corpus search always. Company inferred in Analyze call. |

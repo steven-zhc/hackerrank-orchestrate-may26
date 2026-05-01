@@ -7,7 +7,7 @@
 | Language | TypeScript (strict) | Preference |
 | Runtime | Node.js via tsx | Fast dev, no build step needed |
 | FP framework | Effect.ts | Pipe, Effect.gen, Layer, Service pattern |
-| LLM client | @langchain/anthropic | Claude API via LangChain abstraction |
+| LLM client | @langchain/openai (`ChatOpenAI`, gpt-4o) | OpenAI API via LangChain abstraction |
 | Vector store | LangChain MemoryVectorStore | Zero external deps, in-memory |
 | Embeddings | @langchain/openai (`text-embedding-3-small`) | OpenAI embeddings for vector search. Cheap ($0.02/1M tokens). |
 | Schema/validation | Zod | Structured output from LLM + domain VO validation |
@@ -102,8 +102,8 @@ code/
   src/
     main.ts                     # Entry point, wires all layers, runs program
     shared/                     # Shared Kernel
-      config.ts                 # ConfigService (ANTHROPIC_API_KEY, OPENAI_API_KEY)
-      llm.ts                    # LlmService (ChatAnthropic via LangChain)
+      config.ts                 # ConfigService (OPENAI_API_KEY, DATA_DIR)
+      llm.ts                    # LlmService (ChatOpenAI via LangChain)
     corpus/                     # Corpus Bounded Context
       document.ts               # CorpusDocument value object
       loader.ts                 # Recursively read data/**/*.md, tag company/category
@@ -187,7 +187,7 @@ const AnalysisSchema = z.object({
 // analyze.ts — LangChain withStructuredOutput
 const analyzeTicket = (ticket: SupportTicket, context: RetrievedContext) =>
   Effect.tryPromise(() => {
-    const model = new ChatAnthropic({ model: "claude-sonnet-4-20250514", temperature: 0 })
+    const model = new ChatOpenAI({ model: "gpt-4o", temperature: 0 })
       .withStructuredOutput(AnalysisSchema)
     return model.invoke(buildAnalyzePrompt(ticket, context))
   })
@@ -198,14 +198,13 @@ const analyzeTicket = (ticket: SupportTicket, context: RetrievedContext) =>
 ```
 effect
 @langchain/core
-@langchain/anthropic
 @langchain/openai
 zod
 csv-parse
 csv-stringify
 ```
 
-7 runtime deps total. (LangGraph removed, Zod added.)
+6 runtime deps total. (LangGraph removed, Zod added, @langchain/anthropic removed — OpenAI only.)
 
 Dev deps:
 ```
