@@ -61,3 +61,35 @@
 3. **P2: IO** — Test CSV reader with sample_support_tickets.csv
 4. **P3: Triage Pipeline** — Implement analyze.ts and respond.ts LLM calls
 5. **P4: Integration** — Wire end-to-end on full dataset
+
+---
+
+# TODO — 2026-05-01 (Phase: P2 IO)
+
+## Summary
+- Created P2 IO implementation plan (`docs/sprint1_p2_io.md`) with review corrections
+- Created `code/src/io/test-io.ts` — test script for CSV reader + writer verification
+- Added `test:io` script to package.json
+- Ran `pnpm test:io` — all tests passed: sample CSV (10 records), full CSV (29 records), writer header match, multiline round-trip
+- Created `/dev-review` command for senior developer plan reviews
+- Updated `/wrap-up` command to include plan status updates
+- No bugs found in IO layer — reader and writer work correctly as implemented in P0
+
+## Remaining Issues
+- `test-corpus.ts` not yet executed — needs `pnpm test:corpus` run (requires OPENAI_API_KEY)
+- `triage/analyze.ts` — Phase 1 LLM call still a stub
+- `triage/respond.ts` — Phase 2 LLM call still a stub
+- Full corpus indexing (774 docs) deferred until cache implemented
+- `relax_quotes`/`relax_column_count` in csv-reader — works but could be cleaned up in polish phase
+
+## Improvement Suggestions
+- Add embeddings disk cache after proving retrieval works
+- Consider chunking large .md files if retrieval quality is poor
+- Remove `relax_quotes`/`relax_column_count` from csv-reader during polish (P6)
+
+## Next Steps
+1. **Run `pnpm test:corpus`** — Execute P1 test, verify corpus load + index + retrieval
+2. **P3: Triage Pipeline** — Implement analyze.ts and respond.ts LLM calls (the core work)
+3. **P4: Integration** — Wire end-to-end on full dataset
+4. **P5: Tune & Test** — Create validate.ts, run against sample, iterate on prompts
+5. **P6: Polish** — README, cleanup, submission prep
