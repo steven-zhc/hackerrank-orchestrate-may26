@@ -133,3 +133,36 @@
 1. **P4: Integration** — Wire end-to-end on full 29-ticket dataset, verify output.csv
 2. **P5: Tune & Test** — Create validate.ts, compare output vs sample, iterate on prompts
 3. **P6: Polish** — README in code/, determinism verification, final cleanup, submission prep
+
+---
+
+# TODO — 2026-05-01 (Phase: P4+P5 Integration + Validation)
+
+## Summary
+- Ran agent on full 29-ticket dataset — all completed, 0 error fallbacks, ~9 minutes
+- Output distribution: 15 Escalated / 14 Replied, 22 product_issue / 4 bug / 3 invalid
+- Implemented `validate.ts` — compares agent output vs sample expected output per column
+- Validation results: status 80%, request_type 100%, product_area 40%, overall 73%
+- Identified header format mismatch: sample uses title case with spaces, we use lowercase underscores
+- Created P4+P5 merged plan doc with test results and miss analysis
+
+## Remaining Issues
+- **Product area accuracy (40%)** — LLM picks non-canonical values (`hackerrank_community`, `claude` instead of `privacy`)
+- **Status edge cases (80%)** — account deletion and stolen cheques escalated when sample expects replied
+- **Missing enum value**: `conversation_management` in sample but not in our canonical enum
+- **Header format**: sample uses `Product Area` (title case), we output `product_area` (lowercase)
+- **Visa sub-areas**: LLM defaults to `consumer` instead of `travel_support`/`general_support`
+- README in `code/` not yet written
+
+## Improvement Suggestions (Prompt Tuning)
+- Add `conversation_management` to Claude product area enum in prompts.ts
+- Add prompt rule: "Use exact values from the canonical list, do not prefix with ecosystem name"
+- Add prompt rule: "For account deletion requests that can be answered from docs, reply instead of escalate"
+- Add prompt examples for Visa sub-areas (travel_support vs consumer vs general_support)
+- Consider product area post-normalization (strip ecosystem prefix, fuzzy match to enum)
+- Fix header format to match sample CSV if evaluator doesn't normalize
+
+## Next Steps
+1. **Prompt tuning** — Fix product area accuracy (biggest scoring opportunity: 40% -> target 70%+)
+2. **Header format fix** — Match sample CSV casing if needed
+3. **P6: Polish** — README in code/, final run, submission prep
