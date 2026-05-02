@@ -6,6 +6,9 @@ export const AppConfig = Config.all({
   dataDir: Config.string("DATA_DIR").pipe(
     Config.withDefault(path.resolve(process.cwd(), "data")),
   ),
+  cacheDir: Config.string("CACHE_DIR").pipe(
+    Config.withDefault(path.resolve(process.cwd(), "..", "data", "embeddings")),
+  ),
 })
 
 export type AppConfig = Config.Config.Success<typeof AppConfig>

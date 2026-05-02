@@ -6,7 +6,7 @@ export const AnalysisSchema = z.object({
   request_type: z.enum(["product_issue", "feature_request", "bug", "invalid"]),
   product_area: z.string().describe("Canonical product area from the enum, or empty"),
   status: z.enum(["replied", "escalated"]),
-  escalation_reason: z.string().optional().describe("Why escalated, if applicable"),
+  escalation_reason: z.string().nullable().describe("Why escalated, if applicable"),
   justification: z.string().describe("Concise explanation of the decision, referencing sources"),
   relevant_sources: z.array(z.string()).describe("Corpus document paths used"),
 })

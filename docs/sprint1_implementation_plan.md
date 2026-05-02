@@ -62,3 +62,10 @@ hr ../support_tickets/support_tickets.csv   # defaults to ./output.csv
 | D24 | Full corpus search (no company filter) | 774 docs is fast in memory. Company filtering is premature optimization that reduces recall. |
 | D25 | validate.ts comparison script | Data-driven tuning: compare agent output vs sample expected output, score per column. |
 | D26 | tsx direct binary, no compile step | `pnpm build` = `tsc --noEmit` (type check). `hr` binary uses tsx shebang. Zero build overhead. |
+| D27 | `prompts.ts` as pure template module | No Effect wrapping — prompt construction is side-effect-free. Returns `BaseMessage[]`. |
+| D28 | Status title-casing in `result.ts` factory methods | Sample CSV uses `Replied`/`Escalated` (title-case). Problem statement says lowercase. We follow sample as ground truth. |
+| D29 | Invalid tickets: canned response via `fromResponse` | `fromAnalysis` fallback says "Escalated to human agent" which contradicts `status: Replied`. Use `fromResponse` with canned string. |
+| D30 | `as ChatOpenAI` local cast in `analyze.ts` | `BaseChatModel` lacks Zod-typed `withStructuredOutput` overload. Cast locally, keep `LlmServiceShape` generic. |
+| D31 | Embeddings disk cache (JSON + SHA-256) | Single JSON file at `data/embeddings/corpus-cache.json`. SHA-256 content hash for auto-invalidation. Zero new deps. |
+| D32 | Embedding truncation at 8K chars | `text-embedding-3-small` has 8192 token limit. 8K chars (~2-4K tokens) guarantees no overflow. Full content still used in LLM context. |
+| D33 | `escalation_reason` uses `.nullable()` not `.optional()` | OpenAI structured output API requires `.nullable()` for optional fields in Zod schemas. |

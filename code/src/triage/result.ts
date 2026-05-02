@@ -13,12 +13,15 @@ export interface TriageResult {
   readonly sources: ReadonlyArray<string>
 }
 
+const titleCase = (s: string): string =>
+  s.charAt(0).toUpperCase() + s.slice(1)
+
 export const TriageResult = {
   fromAnalysis: (ticket: SupportTicket, analysis: Analysis): TriageResult => ({
     issue: ticket.issue,
     subject: ticket.subject,
     company: analysis.company || ticket.company,
-    status: analysis.status,
+    status: titleCase(analysis.status),
     product_area: analysis.product_area,
     response: analysis.escalation_reason ?? "Escalated to human agent.",
     justification: analysis.justification,
@@ -34,7 +37,7 @@ export const TriageResult = {
     issue: ticket.issue,
     subject: ticket.subject,
     company: analysis.company || ticket.company,
-    status: "replied",
+    status: "Replied",
     product_area: analysis.product_area,
     response,
     justification: analysis.justification,
@@ -46,7 +49,7 @@ export const TriageResult = {
     issue: ticket.issue,
     subject: ticket.subject,
     company: ticket.company,
-    status: "escalated",
+    status: "Escalated",
     product_area: "",
     response: "Escalated to human agent due to processing error.",
     justification: `Error: ${error instanceof Error ? error.message : String(error)}`,

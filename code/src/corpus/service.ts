@@ -2,7 +2,7 @@ import { Context, Effect, Layer, Ref } from "effect"
 import type { MemoryVectorStore } from "langchain/vectorstores/memory"
 import type { RetrievedContext } from "./document.js"
 import { loadCorpus } from "./loader.js"
-import { buildIndex } from "./indexer.js"
+import { buildIndexCached } from "./indexer.js"
 import { ConfigService } from "../shared/config.js"
 
 export class CorpusError extends Error {
@@ -24,13 +24,14 @@ export class CorpusService extends Context.Tag("CorpusService")<
 const initIndex = (
   dataDir: string,
   openaiApiKey: string,
+  cacheDir: string,
 ): Effect.Effect<MemoryVectorStore, CorpusError> =>
   Effect.gen(function* () {
     yield* Effect.logInfo(`Loading corpus from: ${dataDir}`)
     const docs = yield* loadCorpus(dataDir)
     yield* Effect.logInfo(`Loaded ${docs.length} corpus documents`)
     yield* Effect.logInfo("Building vector index...")
-    const index = yield* buildIndex(docs, openaiApiKey)
+    const index = yield* buildIndexCached(docs, openaiApiKey, cacheDir)
     yield* Effect.logInfo("Vector index ready")
     return index
   }).pipe(Effect.mapError((e) => new CorpusError(e.message)))
@@ -64,7 +65,7 @@ export const CorpusServiceLive = Layer.effect(
     const getOrBuildIndex = Effect.gen(function* () {
       const cached = yield* Ref.get(indexRef)
       if (cached) return cached
-      const index = yield* initIndex(config.dataDir, config.openaiApiKey)
+      const index = yield* initIndex(config.dataDir, config.openaiApiKey, config.cacheDir)
       yield* Ref.set(indexRef, index)
       return index
     })

@@ -19,6 +19,14 @@ export const triageTicket = (
       return TriageResult.fromAnalysis(ticket, analysis)
     }
 
+    if (!analysis.is_valid) {
+      return TriageResult.fromResponse(
+        ticket,
+        analysis,
+        "I'm sorry, this request is outside the scope of our support.",
+      )
+    }
+
     const response = yield* generateResponse(ticket, context, analysis)
     return TriageResult.fromResponse(ticket, analysis, response)
   })

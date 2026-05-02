@@ -93,3 +93,43 @@
 3. **P4: Integration** — Wire end-to-end on full dataset
 4. **P5: Tune & Test** — Create validate.ts, run against sample, iterate on prompts
 5. **P6: Polish** — README, cleanup, submission prep
+
+---
+
+# TODO — 2026-05-01 (Phase: P3 Triage Pipeline + Cache)
+
+## Summary
+- Implemented Phase 1 (analyze.ts): structured output via `withStructuredOutput(AnalysisSchema)` with escalation taxonomy, product area enum, company inference
+- Implemented Phase 2 (respond.ts): plain `chatModel.invoke()` with grounded response generation
+- Created `prompts.ts`: prompt templates for both phases with context block formatting and source path normalization
+- Fixed status capitalization in `result.ts`: `titleCase()` for `fromAnalysis`, `"Replied"`/`"Escalated"` literals
+- Added invalid ticket branch in `pipeline.ts`: `fromResponse` with canned "out of scope" string (skips Phase 2)
+- Fixed `escalation_reason` schema: `.optional()` -> `.nullable()` for OpenAI structured output API compatibility
+- Implemented embeddings disk cache (`cache.ts`, `indexer.ts`): SHA-256 content hash, JSON file at `data/embeddings/corpus-cache.json`
+- Added embedding truncation at 8K chars to stay under `text-embedding-3-small` 8192 token limit
+- Added `batchSize: 100` to `OpenAIEmbeddings` to stay under 300K tokens per API request
+- Added `DATA_DIR=../data` to `.env.local` (corpus is at repo root, not `code/data`)
+- Added `CACHE_DIR` config option with default
+- Added `pnpm build:index` (full corpus cache builder) and `pnpm test:cache` (3-doc roundtrip test)
+- Smoke tested on 10 sample tickets: all processed correctly in ~4 min, key tickets verified (site down=Escalated, Iron Man=invalid, Thank you=invalid)
+- Added decisions D27-D33 to implementation plan
+
+## Remaining Issues
+- `io/validate.ts` not yet created (planned for P5)
+- No automated comparison of agent output vs sample expected output
+- Product area values not post-normalized (LLM picks from prompt enum, no runtime enforcement)
+- topK=5 may need tuning (some tickets might benefit from 8-10 docs)
+- Response length/tone not tuned
+- No `Effect.retry` on structured output failures (relies on `catchAll` -> `fromError`)
+
+## Improvement Suggestions
+- Add `Effect.retry({ times: 1 })` to `analyzeTicket` for structured output flakiness
+- Tune `MAX_EMBED_CHARS` — 8K is conservative; could try 12K after measuring actual token counts
+- Add product area normalization post-processing (fuzzy match to canonical enum)
+- Consider parallel ticket processing once rate limits are understood
+- Response quality: add few-shot examples to respond prompt
+
+## Next Steps
+1. **P4: Integration** — Wire end-to-end on full 29-ticket dataset, verify output.csv
+2. **P5: Tune & Test** — Create validate.ts, compare output vs sample, iterate on prompts
+3. **P6: Polish** — README in code/, determinism verification, final cleanup, submission prep

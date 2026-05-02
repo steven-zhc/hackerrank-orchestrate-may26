@@ -10,7 +10,9 @@
     "start": "tsx --env-file=.env.local src/main.ts",
     "test:corpus": "tsx --env-file=.env.local src/corpus/test-corpus.ts",
     "test:io": "tsx --env-file=.env.local src/io/test-io.ts",
-    "validate": "tsx --env-file=.env.local src/io/validate.ts"
+    "validate": "tsx --env-file=.env.local src/io/validate.ts",
+    "test:cache": "tsx --env-file=.env.local src/corpus/test-cache.ts",
+    "build:index": "tsx --env-file=.env.local src/corpus/build-index.ts"
   },
   "dependencies": {
     "@langchain/core": "^0.3.80",
